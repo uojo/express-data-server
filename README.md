@@ -105,13 +105,13 @@ dataServer.create(options); // 启动
             "acList": {
                 "noPageBean":false, // 补全分页对象
                 "queryFields":{
-                    size:{ // 每页展示数量
-                    name:"pageSize", // [String]，别名
-                    value:10 // [Number]，默认值
+                    "size":{ // 每页展示数量
+                    "name":"pageSize", // [String]，别名
+                    "value":10 // [Number]，默认值
                 },
-                pageNo:{
-                    name:"pageNo", // [String]，别名
-                    value:1 // [Number]，默认值
+                "pageNo":{
+                    "name":"pageNo", // [String]，别名
+                    "value":1 // [Number]，默认值
                 }
             }
         }
