@@ -188,7 +188,7 @@ function acStructure(obj){
 }
 
 function acList(fileData, {noPageBean, queryFields}, req){
-	elog(noPageBean)
+	// elog(noPageBean)
 	// 补全基本结构
 	if( !noPageBean && fileData.items && fileData.items.length && !fileData.pageBean ){
 		
@@ -260,18 +260,53 @@ function ckRedirect(req, map){
 	return rlt;
 }
 
+function setAllowOrigin(res){
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
+	res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+	// res.header("X-Powered-By",' 3.2.1')
+	res.header("Content-Type", "application/json;charset=utf-8");
+}
+
 module.exports = function(app, options){
 	
 	if(!app)return;
+	
+	function checkOpsPlugins(ops){
+		let defPs = ['fastMap','getFile','placeHolder','acStructure','acList','acQuery'];
+		let ps = ops.plugins
+		if( !ps ){
+			return defPs;
+		}
+		
+		let rlt = [];
+		if( ps.constructor === Object ){
+			for(i in defPs){
+				let val = defPs[i];
+				if( ps.hasOwnProperty(val) && !ps[val] ){
+					
+				}else{
+					rlt.push(val)
+				}
+			}
+		}else if( ps.constructor === Array){
+			rlt = ps
+		}
+		elog(rlt)
+		ops.plugins = rlt;
+		return rlt;
+	}
+	checkOpsPlugins(options);
+	
 	// elog(options)
-	let ops = Object.assign({
+	let ops = assignDeep({
 		bodyParser:true,
 		debug:false,
     reqPath:"data",
     basePath: __dirname,
     dataPath:'api',
 		fileMap:null,
-		plugins:['fastMap','getFile','placeHolder','acStructure','acList','acQuery'],
+		plugins:[],
 		pluginsOptions:{
 			acList:{
 				queryFields:{
@@ -290,10 +325,6 @@ module.exports = function(app, options){
 		
 	},options)
 	
-	function cPlugin(name){
-		return ops.plugins.includes(name);
-	}
-	
 	if(!dataDirPath){
 		dataDirPath = path.join(ops.basePath, ops.dataPath)
 	}
@@ -311,11 +342,7 @@ module.exports = function(app, options){
 		let jsonPath = getJsonPath(req);
 		
 		// 支持跨域
-		res.header("Access-Control-Allow-Origin", "*");
-		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
-		res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-		// res.header("X-Powered-By",' 3.2.1')
-		res.header("Content-Type", "application/json;charset=utf-8");
+		setAllowOrigin(req);
 		
 		let ckrdt = ckRedirect(req, ops.fileMap)
 		if( ckrdt.redirect ){
@@ -325,7 +352,12 @@ module.exports = function(app, options){
 		ckrdt.newPath && (jsonPath = ckrdt.newPath)
 		// elog( jsonPath );
 		// elog( req.query );
-
+		let tOps=null;
+		function cPlugin(name){
+			let td = tOps?tOps:ops
+			return td.plugins.includes(name);
+		}
+		
 		if(!jsonPath){
 			let t_rlt={
 				message:"错误！接口地址错误"
@@ -357,14 +389,15 @@ module.exports = function(app, options){
 					// elog( jsonStr )
 					let rsp;
 					let fileJSON = JSON.parse(jsonStr);
-					let tOps={};
+					tOps = {}
 					if( fileJSON._settings ){
 						assignDeep(tOps, ops, fileJSON._settings)
+						checkOpsPlugins(tOps);
 						delete fileJSON._settings;
 					}else{
 						assignDeep(tOps, ops)
 					}
-					// elog(fileJSON._settings, ops.pluginsOptions.acList.noPageBean)
+					elog(tOps)
 					// 补列表结构
 					cPlugin('acList') && (rsp = acList(fileJSON, tOps.pluginsOptions.acList, req))
 					// 补基本结构

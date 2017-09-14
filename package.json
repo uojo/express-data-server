@@ -1,6 +1,6 @@
 {
   "name": "express-data-server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "接口模拟服务",
   "main": "index.js",
   "scripts": {

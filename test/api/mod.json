@@ -2,5 +2,10 @@
 	"id": 11,
 	"name":"后台返回名称",
 	"createTime":1495173205249,
-	"modifyTime":1495173206249
+	"modifyTime":1495173206249,
+	"_settings":{
+		"plugins":{
+			"acStructure":false
+		}
+	}
 }

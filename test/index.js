@@ -23,7 +23,9 @@ require('../index')(app,{
 			elog(req.body)
 			return '_true';
 		},
-		
+	},
+	plugins:{
+		// "acStructure":false
 	}
 })
 
