@@ -1,0 +1,15 @@
+{
+	"items":[
+		{"id":"1","name": "分类名称A"},
+		{"id":"2","name": "分类名称B"},
+		{"id":"3","name": "分类名称C"}
+	],
+	"_settings":{
+		"pluginsOptions":{
+			"acList":{
+				"noPageBean":true
+			}
+		}
+		
+	}
+}

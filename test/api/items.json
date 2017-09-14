@@ -1,0 +1,7 @@
+{
+	"items":[
+		{"id":"{id}","name": "{random}"},
+		{"id":"{id}","name": "分类名称B"},
+		{"id":"{id}","name": "分类名称C"}
+	]
+}

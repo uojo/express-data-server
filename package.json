@@ -1,0 +1,36 @@
+{
+  "name": "express-data-server",
+  "version": "0.1.0",
+  "description": "接口模拟服务",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon test/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uojo/express-data-server"
+  },
+  "keywords": [
+    "express",
+    "mock",
+    "data-server",
+    "api-mock",
+    "json-mock"
+  ],
+  "author": "uojonet@163.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/uojo/express-data-server/issues"
+  },
+  "homepage": "",
+  "devDependencies": {
+    "browser-sync": "2.18.13",
+    "cross-env": "5.0.5",
+    "express": "4.15.4",
+    "nodemon": "1.11.0"
+  },
+  "dependencies": {
+    "body-parser": "1.18.0",
+    "uojo-kit": "0.1.3"
+  }
+}
