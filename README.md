@@ -148,6 +148,8 @@ acQuery | 补全请求时的 query 数据
 
 
 ## ChangeLog
+### 0.2.1
+- fix checkOpsPlugins
 ### 0.2.0
 - 参数 plugins 支持对象方式设置
 ### 0.1.0
