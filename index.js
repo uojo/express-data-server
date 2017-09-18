@@ -276,7 +276,8 @@ module.exports = function(app, options){
 		let defPs = ['fastMap','getFile','placeHolder','acStructure','acList','acQuery'];
 		let ps = ops.plugins
 		if( !ps ){
-			return defPs;
+			ops.plugins = defPs;
+			return ops;
 		}
 		
 		let rlt = [];
@@ -294,7 +295,7 @@ module.exports = function(app, options){
 		}
 		elog(rlt)
 		ops.plugins = rlt;
-		return rlt;
+		return ops;
 	}
 	checkOpsPlugins(options);
 	
@@ -355,6 +356,7 @@ module.exports = function(app, options){
 		let tOps=null;
 		function cPlugin(name){
 			let td = tOps?tOps:ops
+			elog(name,td)
 			return td.plugins.includes(name);
 		}
 		
@@ -397,7 +399,7 @@ module.exports = function(app, options){
 					}else{
 						assignDeep(tOps, ops)
 					}
-					elog(tOps)
+					// elog(tOps)
 					// 补列表结构
 					cPlugin('acList') && (rsp = acList(fileJSON, tOps.pluginsOptions.acList, req))
 					// 补基本结构
