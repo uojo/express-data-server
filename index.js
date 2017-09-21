@@ -172,7 +172,7 @@ function acStructure(obj){
 	let rlt
 	
 	if( obj.success == false ){
-		rlt = Object.assign({'message':""},obj);
+		rlt = Object.assign({'message':"接口返回的错误信息……"},obj);
 		
 	}else if( Object.prototype.hasOwnProperty.call(obj, 'success') ){
 		rlt = obj;
@@ -209,7 +209,7 @@ function acList(fileData, {noPageBean, queryFields}, req){
 			}
 			return b;
 		})(fileData.items.length,fileData.pageBean.pageSize)
-		elog(needCreate)
+		// elog(needCreate)
 		if(needCreate){
 			needCreate--;
 			let oriData = cloneDeep(fileData.items);
@@ -293,7 +293,7 @@ module.exports = function(app, options){
 		}else if( ps.constructor === Array){
 			rlt = ps
 		}
-		elog(rlt)
+		// elog(rlt)
 		ops.plugins = rlt;
 		return ops;
 	}
@@ -356,7 +356,7 @@ module.exports = function(app, options){
 		let tOps=null;
 		function cPlugin(name){
 			let td = tOps?tOps:ops
-			elog(name,td)
+			// elog(name,td)
 			return td.plugins.includes(name);
 		}
 		
@@ -371,9 +371,11 @@ module.exports = function(app, options){
 			res.status(500).json(t_rlt);
 			
 		}else{
-			const ck_rlt = cPlugin('fastMap')? fastRoutes(jsonPath,req) :false;
+			let ck_rlt = cPlugin('fastMap')? fastRoutes(jsonPath,req) :false;
 			
 			if( ck_rlt ){
+				elog(ck_rlt)
+				cPlugin('acStructure') && (ck_rlt = acStructure(ck_rlt));
 				res.status(200).json(ck_rlt);
 				
 			}else{
@@ -410,7 +412,7 @@ module.exports = function(app, options){
 					cPlugin('placeHolder') && (rsp = placeHolder(rsp))
 					// elog( rsp )
 					res.status(200).json(rsp);
-				
+					
 				}catch(err){
 					elog(err)
 					res.status(403).json({

@@ -148,6 +148,8 @@ acQuery | 补全请求时的 query 数据
 
 
 ## ChangeLog
+### 0.3.0
+- 新增 当执行插件 `fastMap` 后，再执行 `acStructure`，即所有输出前都先执行 `acStructure`
 ### 0.2.1
 - fix checkOpsPlugins
 ### 0.2.0
