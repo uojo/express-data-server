@@ -374,7 +374,7 @@ module.exports = function(app, options){
 			let ck_rlt = cPlugin('fastMap')? fastRoutes(jsonPath,req) :false;
 			
 			if( ck_rlt ){
-				elog(ck_rlt)
+				// elog(ck_rlt)
 				cPlugin('acStructure') && (ck_rlt = acStructure(ck_rlt));
 				res.status(200).json(ck_rlt);
 				
@@ -414,7 +414,7 @@ module.exports = function(app, options){
 					res.status(200).json(rsp);
 					
 				}catch(err){
-					elog(err)
+					// elog(err)
 					res.status(403).json({
 						success:false,
 						message:"错误！接口文件解析出错，" + err

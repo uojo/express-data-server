@@ -1,6 +1,6 @@
 {
   "name": "express-data-server",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "基于 express 的模拟接口服务（中间件）",
   "main": "index.js",
   "scripts": {
@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "body-parser": "1.18.0",
-    "uojo-kit": "0.1.3"
+    "uojo-kit": "0.2.0"
   }
 }
