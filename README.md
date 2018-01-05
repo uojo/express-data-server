@@ -79,14 +79,15 @@ dataServer.create(options); // 启动
 #### 参数补充说明
 ##### plugins 说明&举例
 类型：Array，默认值如下：
-字段 | 说明
-:---|:---
-fastMap | 预设的内置接口
-getFile | 获取 JSON 文件数据
-placeHolder | 替换数据内的占位符
-acStructure | 补全基本结构
-acList | 补全列表特种的数据结构
-acQuery | 补全请求时的 query 数据
+
+| 字段 | 说明 |
+| :---|:--- |
+| fastMap | 预设的内置接口 |
+| getFile | 获取 JSON 文件数据 |
+| placeHolder | 替换数据内的占位符 |
+| acStructure | 补全基本结构 |
+| acList | 补全列表特种的数据结构 |
+| acQuery | 补全请求时的 query 数据 |
 
 如果想禁用某个插件，可以传入对象：
 ```javascript
