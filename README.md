@@ -148,6 +148,8 @@ acQuery | 补全请求时的 query 数据
 
 
 ## ChangeLog
+### 0.3.2
+- fix 占位符 {id} 的值与分页数据关联
 ### 0.3.1
 - 升级 uojo-kit 包
 ### 0.3.0

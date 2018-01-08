@@ -141,7 +141,11 @@ function placeHolder(data){
 			if(val==='{id}'){
 				// elog(parent)
 				// index++
-				parent[key] = ++index;
+				var startIndex = 0;
+				if(data.results && data.results.pageBean){
+					startIndex = (data.results.pageBean.pageNo-1) * data.results.pageBean.pageSize;
+				}
+				parent[key] = startIndex+(++index);
 			}
 		}
 	})
@@ -242,6 +246,7 @@ function ckRedirect(req, map){
 				tpath = map[key];
 				if(typeof tpath==='function'){
 					tpath = tpath.call(undefined, {
+						'regExp':jsonPath.match(tRegExp),
 						'pathRegExpMatch':jsonPath.match(tRegExp),
 						'req':req
 					})
