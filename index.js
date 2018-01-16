@@ -191,7 +191,7 @@ function acStructure(obj){
 	return rlt;
 }
 
-function acList(fileData, {noPageBean, queryFields}, req){
+function acList(fileData, {noPageBean, queryFields, totalCount}, req){
 	// elog(noPageBean)
 	// 补全基本结构
 	if( !noPageBean && fileData.items && fileData.items.length && !fileData.pageBean ){
@@ -199,7 +199,12 @@ function acList(fileData, {noPageBean, queryFields}, req){
 		fileData.pageBean = {
 			"pageNo": parseInt(req.query[queryFields.pageNo.name]) || queryFields.pageNo.value,
 			"pageSize": parseInt(req.query[queryFields.size.name]) || queryFields.size.value,
-			"totalCount": 999
+			"totalCount": totalCount
+		}
+		
+		// 判断 pageNo 的合法性
+		if( fileData.pageBean.pageNo > Math.ceil( fileData.pageBean.totalCount/fileData.pageBean.pageSize) ){
+			fileData.items= [];
 		}
 		
 		let needCreate = (function(len,size){
@@ -325,7 +330,8 @@ module.exports = function(app, options){
 						value:1 // [Number]，默认值
 					}
 				},
-				noPageBean:false
+				noPageBean:false,
+				totalCount:100 // [Number]，总记录数
 			}
 		}
 		
@@ -406,7 +412,7 @@ module.exports = function(app, options){
 					}else{
 						assignDeep(tOps, ops)
 					}
-					// elog(tOps)
+					elog(tOps)
 					// 补列表结构
 					cPlugin('acList') && (rsp = acList(fileJSON, tOps.pluginsOptions.acList, req))
 					// 补基本结构

@@ -135,7 +135,8 @@ acQuery | 补全请求时的 query 数据
                         "name": "pageNo", // [String]，别名
                         "value": 1 // [Number]，默认值
                     }
-                }
+                },
+								"totalCount": 100, // 设置总记录数，默认值100
             }
         }
     }
@@ -148,6 +149,8 @@ acQuery | 补全请求时的 query 数据
 
 
 ## ChangeLog
+### 0.4.0
+- 列表插件新增参数 totalCount，可限定总记录数，满足翻页超出总页数时。
 ### 0.3.2
 - fix 占位符 {id} 的值与分页数据关联
 ### 0.3.1
