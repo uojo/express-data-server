@@ -313,6 +313,7 @@ module.exports = function(app, options){
 	let ops = assignDeep({
 		bodyParser:true,
 		debug:false,
+		delay:0,
     reqPath:"data",
     basePath: __dirname,
     dataPath:'api',
@@ -422,7 +423,9 @@ module.exports = function(app, options){
 					// 替换占位符
 					cPlugin('placeHolder') && (rsp = placeHolder(rsp))
 					// elog( rsp )
-					res.status(200).json(rsp);
+					setTimeout(function(){
+						res.status(200).json(rsp);
+					},tOps.delay)
 					
 				}catch(err){
 					// elog(err)

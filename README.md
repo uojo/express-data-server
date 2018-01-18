@@ -73,6 +73,7 @@ dataServer.create(options); // 启动
 | basePath | String | 是 | - | 一般为该文件的父目录路径，例如：`__dirname` |
 | dataPath | String | 是 | - | 数据存放的目录名，是 basePath 的相对路径，例如：'../api' |
 | debug | Boolean | - | false | 是否打印调试信息 |
+| delay | number | - | 0 | 设置延迟返回的毫秒数 |
 | fileMap | Object | - | - | url 与 json文件的关联映射表 |
 | plugins | Array\|Object | -| - | 启用的插件 |
 
@@ -149,6 +150,8 @@ acQuery | 补全请求时的 query 数据
 
 
 ## ChangeLog
+### 0.5.0
+- 新增延迟返回参数 delay。
 ### 0.4.0
 - 列表插件新增参数 totalCount，可限定总记录数，满足翻页超出总页数时。
 ### 0.3.2
