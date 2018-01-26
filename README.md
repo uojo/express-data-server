@@ -108,6 +108,17 @@ acQuery | 补全请求时的 query 数据
 ```
 访问：`http://127.0.0.1:3000/data/aaa` 时，会去找 `test1.json` 文件，且 `http://127.0.0.1:3000/data/test1` 依旧可访问。
 
+##### placeHolder 说明&举例
+`placeHolder` 提供了三种占位符。其使用如下：
+```javascript
+{
+    "random":"{random}", // 100 到 200 之间的随机整数
+    "tiem":"{times}", // 时间戳
+    "id": "{id}",  // 从1开始递增的整数
+}
+```
+
+
 ## 文件中的配置（单个请求）
 有部分参数是可以在 json 文件中字段 `_settings` 配置的，但仅对这个 json 有效，和全局配置重名的字段，会覆盖全局配置项。保留字段均放在 `_settings` 中，不与实际业务字段冲突。
 
