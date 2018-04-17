@@ -110,12 +110,12 @@ dataServer.create(options); // 启动
 访问：`http://127.0.0.1:3000/data/aaa` 时，会去找 `test1.json` 文件，且 `http://127.0.0.1:3000/data/test1` 依旧可访问。
 
 ##### placeHolder 说明&举例
-`placeHolder` 提供了三种占位符。其使用如下：
+`placeHolder` 提供了三种占位符，支持拼接。其使用如下：
 ```javascript
 {
     "random":"{random}", // 100 到 200 之间的随机整数
-    "tiem":"{times}", // 时间戳
-    "id": "{id}",  // 从1开始递增的整数
+    "times":"{times}", // 时间戳
+    "id": "{id}_{index}",  // 从1开始递增的整数
 }
 ```
 
@@ -162,19 +162,23 @@ dataServer.create(options); // 启动
 
 
 ## ChangeLog
+### 0.5.1
+- 变更占位符的执行方式。
+- 新增占位符 index。
+- 占位符支持拼接。
 ### 0.5.0
 - 新增延迟返回参数 delay。
 ### 0.4.0
 - 列表插件新增参数 totalCount，可限定总记录数，满足翻页超出总页数时。
 ### 0.3.2
-- fix 占位符 {id} 的值与分页数据关联
+- fix 占位符 {id} 的值与分页数据关联。
 ### 0.3.1
-- 升级 uojo-kit 包
+- 升级 uojo-kit 包。
 ### 0.3.0
-- 新增 当执行插件 `fastMap` 后，再执行 `acStructure`，即所有输出前都先执行 `acStructure`
+- 新增 当执行插件 `fastMap` 后，再执行 `acStructure`，即所有输出前都先执行 `acStructure` 。
 ### 0.2.1
-- fix checkOpsPlugins
+- fix checkOpsPlugins 。
 ### 0.2.0
-- 参数 plugins 支持对象方式设置
+- 参数 plugins 支持对象方式设置。
 ### 0.1.0
-- 第一版本
+- 第一版本。

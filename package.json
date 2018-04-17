@@ -1,6 +1,6 @@
 {
   "name": "express-data-server",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "基于 express 的模拟接口服务（中间件）",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/uojo/express-data-server/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/uojo/express-data-server",
   "devDependencies": {
     "browser-sync": "2.18.13",
     "cross-env": "5.0.5",

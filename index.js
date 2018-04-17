@@ -130,23 +130,30 @@ function placeHolder(data){
 	mapDeep(data,(val,key,parent)=>{
 		// elog(val)
 		if( typeof val === 'string' ){
-			if(val==='{random}'){
-				parent[key] = GetRandomNum(100,200);
-			}
-			
-			if(val==='{times}'){
-				parent[key] = Date.now();
-			}
-			
-			if(val==='{id}'){
-				// elog(parent)
-				// index++
+			var getIndex = function(){
 				var startIndex = 0;
 				if(data.results && data.results.pageBean){
 					startIndex = (data.results.pageBean.pageNo-1) * data.results.pageBean.pageSize;
 				}
-				parent[key] = startIndex+(++index);
+				return startIndex+(++index);
 			}
+			var match_cb = {
+				'id':getIndex,
+				'index':getIndex,
+				'random':function(){
+					return GetRandomNum(100,200);
+				},
+				'times':function(){
+					return Date.now();
+				},
+			}
+
+			parent[key] = val.replace(/{([^}]*)}/g,function(a,b){
+				if(match_cb[b]){
+					return match_cb[b]()
+				}
+			});
+
 		}
 	})
 	

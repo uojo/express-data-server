@@ -1,10 +1,9 @@
 {
 	"items":[
-		{"id":"{id}","name": "{random}"},
-		{"id":"{id}","name": "分类名称B"},
-		{"id":"{id}","name": "分类名称C"}
+		{"id":"{id}","name": "hello_{id}_{random}_{times}"},
+		{"id":"{id}","name": "分类名称B"}
 	],
 	"_settings":{
-		"delay":2000
+		"delay":500
 	}
 }
