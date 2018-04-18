@@ -1,5 +1,6 @@
-const {elog} = require('uojo-kit');
-const express = require('express');
+var {elog} = require('uojo-kit');
+var express = require('express');
+var dataServer = require("../../src/index");
 
 var app = express()
 
@@ -8,9 +9,9 @@ app.get('/redirect',(req,res)=>{
 	// res.send({message:'跳转成功'})
 })
 
-require('../index')(app,{
+dataServer(app,{
 	reqPath: 'data',
-	dataPath: 'api',
+	dataPath: './api',
 	basePath: __dirname,
 	debug:true,
 	fileMap:{
@@ -50,7 +51,7 @@ app.listen(_port, function(err) {
 		},
 		files: [
 			{
-				match:['./index.js','./test/**'],
+				match:['./src/**','./**'],
 				fn:function(e, e_path){
 					bs.reload();
 				}

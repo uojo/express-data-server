@@ -1,0 +1,13 @@
+{
+	"items":[
+		{"id":"{index}","name": "hello_{random}_{times}"},
+		{"id":"{index}","name": "world"}
+	],
+	"_settings":{
+		"pluginsOptions":{
+			"acList":{
+				"totalCount":3
+			}
+		}
+	}
+}

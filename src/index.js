@@ -125,19 +125,19 @@ function GetRandomNum(Min,Max){
 
 function placeHolder(data){
 	// 替换占位符
-	let index=0;
+	let id=0, index=0;
 	// elog(data.results.items.length)
 	mapDeep(data,(val,key,parent)=>{
-		// elog(val)
+		elog(key,val)
 		if( typeof val === 'string' ){
-			var getIndex = function(){
-				var startIndex = 0;
+			let getIndex = function(){
+				let startIndex = 0;
 				if(data.results && data.results.pageBean){
 					startIndex = (data.results.pageBean.pageNo-1) * data.results.pageBean.pageSize;
 				}
 				return startIndex+(++index);
 			}
-			var match_cb = {
+			let match_cb = {
 				'id':getIndex,
 				'index':getIndex,
 				'random':function(){
@@ -148,7 +148,7 @@ function placeHolder(data){
 				},
 			}
 
-			parent[key] = val.replace(/{([^}]*)}/g,function(a,b){
+			parent[key] = val.replace(/{([^}]*)}/ig,function(a,b){
 				if(match_cb[b]){
 					return match_cb[b]()
 				}
@@ -214,7 +214,9 @@ function acList(fileData, {noPageBean, queryFields, totalCount}, req){
 			fileData.items= [];
 		}
 		
+		let resCount = Math.min(fileData.pageBean.totalCount, fileData.pageBean.pageSize);
 		let needCreate = (function(len,size){
+			elog(len,size)
 			if(len>size){
 				return 0;
 			}
@@ -224,8 +226,9 @@ function acList(fileData, {noPageBean, queryFields, totalCount}, req){
 				b++
 			}
 			return b;
-		})(fileData.items.length,fileData.pageBean.pageSize)
-		// elog(needCreate)
+		})(fileData.items.length,resCount)
+
+		elog(needCreate)
 		if(needCreate){
 			needCreate--;
 			let oriData = cloneDeep(fileData.items);
@@ -235,7 +238,7 @@ function acList(fileData, {noPageBean, queryFields, totalCount}, req){
 		}
 		
 		// 多了减
-		fileData.items = fileData.items.slice(0,fileData.pageBean.pageSize)
+		fileData.items = fileData.items.slice(0,resCount)
 		// elog(fileData.items)
 	}
 	

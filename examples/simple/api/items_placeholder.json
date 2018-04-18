@@ -1,9 +1,9 @@
 {
 	"items":[
 		{"id":"{id}","name": "hello_{id}_{random}_{times}"},
-		{"id":"{id}","name": "分类名称B"}
+		{"id":"{index}","name": "world_{id}"}
 	],
 	"_settings":{
-		"delay":500
+
 	}
 }

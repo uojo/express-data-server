@@ -1,0 +1,9 @@
+{
+	"items":[
+		{"id":"{index}","name": "hello_{id}_{random}_{times}"},
+		{"id":"{index}","name": "world"}
+	],
+	"_settings":{
+		"delay":2000
+	}
+}

@@ -1,10 +1,10 @@
 {
   "name": "express-data-server",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "基于 express 的模拟接口服务（中间件）",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "nodemon test/index"
+    "start": "nodemon examples/simple"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,6 @@
     "api-mock",
     "json-mock"
   ],
-  "author": "uojonet@163.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/uojo/express-data-server/issues"
