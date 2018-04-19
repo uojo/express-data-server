@@ -1,9 +1,13 @@
 {
 	"items":[
-		{"id":"{id}","name": "hello_{id}_{random}_{times}"},
-		{"id":"{index}","name": "world_{id}"}
+		{"id":"{id}","name": "hello_{random}_{times}"},
+		{"id":"{id}","name": "world"}
 	],
 	"_settings":{
-
+		"plugins":{
+			"acList":{
+				"fixCount":false
+			}
+		}
 	}
 }

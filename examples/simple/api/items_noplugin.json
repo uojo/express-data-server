@@ -5,8 +5,9 @@
 	],
 	"_settings":{
 		"plugins":{
+			"placeHolder":false,
 			"acList":{
-				"totalCount":3
+				"enable":false
 			}
 		}
 	}

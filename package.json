@@ -1,6 +1,6 @@
 {
   "name": "express-data-server",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "基于 express 的模拟接口服务（中间件）",
   "main": "src/index.js",
   "scripts": {

@@ -88,6 +88,17 @@ dataServer(app,options); // 启动
 | acList | 补全列表特种的数据结构 |
 | acQuery | 补全请求时的 query 数据 |
 
+##### placeHolder
+`placeHolder` 提供了三种占位符，支持拼接。其使用如下：
+```javascript
+{
+  "random":"{random}", // 100 到 200 之间的随机整数
+  "times":"{times}", // 时间戳
+  "id": "{id}_{index}",  // 从1开始递增的整数
+}
+```
+
+##### acStructure
 如果想禁用某个插件，可以传入对象：
 ```javascript
 {
@@ -99,35 +110,20 @@ dataServer(app,options); // 启动
 
 访问：`http://127.0.0.1:3000/data/aaa` 时，会去找 `test1.json` 文件，且 `http://127.0.0.1:3000/data/test1` 依旧可访问。
 
-##### placeHolder 说明&举例
-`placeHolder` 提供了三种占位符，支持拼接。其使用如下：
-```javascript
-{
-  "random":"{random}", // 100 到 200 之间的随机整数
-  "times":"{times}", // 时间戳
-  "id": "{id}_{index}",  // 从1开始递增的整数
-}
-```
 
 ### 文件中的配置
-仅仅影响该文件的请求，有部分参数是可以在 json 文件中字段 `_settings` 配置的，但仅对这个 json 有效，和全局配置重名的字段，会覆盖全局配置项。保留字段均放在 `_settings` 中，不与实际业务字段冲突。
+仅仅影响该文件的请求，有部分参数是可以在 json 文件中字段 `_settings` 配置的，但仅对这个 json 有效，和全局配置重名的字段，会覆盖全局配置项。保留字段均放在 `_settings` 中。
 
-| 字段名 | 类型 | 默认值 | 说明 |
-| :-- | :-- | :-- | :-- |
-| pluginsOptions | Object | 见下方说明 |  |
-
-例子：
 ```javascript
 {
   "name1": "value1",
   "name2": "value2",
   "_settings": {
     "plugins": {
-      "acStructure": false
-    }
-    "pluginsOptions": {
+      "placeHolder":false, // 关闭插件
       "acList": {
-        "noPageBean": true, // 默认 false，响应时不补全 pageBean 字段
+        "enable":true, // [Boolean], 默认 true，只有设置为 false 时，可关闭该插件
+        "noPageBean": true, // [Boolean]，默认 false，响应时不补全 pageBean 字段
         "queryFields": {
           "size": { // 每页展示数量
             "name": "pageSize", // [String]，别名
@@ -138,7 +134,8 @@ dataServer(app,options); // 启动
             "value": 1 // [Number]，默认值
           }
         },
-        "totalCount": 100, // 设置总记录数，默认值100
+        "totalCount": 100, // [Number]，设置总记录数，默认值100
+        "fixCount":true // [Boolean]，默认 true，按 pageSize 补足当前页的记录数
       }
     }
   }
@@ -148,6 +145,10 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.6.0
+- 删除参数 pluginsOptions 。
+- 支持在单个json文件内关闭插件。
+- feature 对插件 acList 新增参数 fixCount 字段。
 ### 0.5.2
 - fix 插件 acList 中，当 pageSize 大于 totalCount 时，返回 totalCount 条记录。
 ### 0.5.1

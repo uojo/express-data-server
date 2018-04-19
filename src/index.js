@@ -128,7 +128,7 @@ function placeHolder(data){
 	let id=0, index=0;
 	// elog(data.results.items.length)
 	mapDeep(data,(val,key,parent)=>{
-		elog(key,val)
+		// elog(key,val)
 		if( typeof val === 'string' ){
 			let getIndex = function(){
 				let startIndex = 0;
@@ -180,6 +180,7 @@ function fastRoutes(jsonPath,req){
 
 // 插件：自动补全响应接口
 function acStructure(obj){
+	// elog(obj)
 	// 补全基本结构
 	let rlt
 	
@@ -200,60 +201,70 @@ function acStructure(obj){
 }
 
 // 插件：完善列表数据
-function acList(fileData, {noPageBean, queryFields, totalCount}, req){
+function acList(fileData, {fixCount, noPageBean, queryFields, totalCount}, req){
 	// elog(noPageBean)
 	// 补全基本结构
 	if( !noPageBean && fileData.items && fileData.items.length && !fileData.pageBean ){
-		
+    // 自动补全数据
+    // elog(fixCount)
+    if(!fixCount){
+      fileData.pageBean = {
+        "pageNo": parseInt(req.query[queryFields.pageNo.name]) || queryFields.pageNo.value,
+        "pageSize": parseInt(req.query[queryFields.size.name]) || fileData.items.length,
+        "totalCount": fileData.items.length
+      }
+      return fileData;
+    }
+
+		// 分页数据
 		let {pageNo,pageSize} = fileData.pageBean = {
 			"pageNo": parseInt(req.query[queryFields.pageNo.name]) || queryFields.pageNo.value,
 			"pageSize": parseInt(req.query[queryFields.size.name]) || queryFields.size.value,
 			"totalCount": totalCount
 		}
 
-		// 超出最大分页数
+		// 判断 pageNo 的合法性，超出最大分页数时
 		let pageNoLimit = Math.ceil(totalCount/pageSize);
 		if(pageNo>pageNoLimit){
-			pageNo = fileData.pageBean.pageNo = pageNoLimit;``
+			pageNo = fileData.pageBean.pageNo = pageNoLimit;
 		}
+      
+    // 当前页需要返回的总记录数
+    let curPageCount = Math.min(totalCount, pageSize);
+    // 计算当前页需要补的记录数，基于 json 文件内的记录记录数，需要翻几翻
+    let curPagefixRatio = (function(count,size){
+      // elog(count,size)
+      if(count>size){
+        return 0;
+      }
+      let a = size%count, b = parseInt(size/count);
+      // 少了补
+      if(a>0){
+        b++
+      }
+      return b;
+    })(fileData.items.length, curPageCount);
 
-		// 判断 pageNo 的合法性
-		if( pageNo > Math.ceil( totalCount/pageSize) ){
-			fileData.items= [];
-		}
-		
-		// 计算当前页需要补的记录数
-		let resCount = Math.min(totalCount, pageSize);
-		let needCreate = (function(len,size){
-			elog(len,size)
-			if(len>size){
-				return 0;
-			}
-			let a = size%len, b = parseInt(size/len);
-			// 少了补
-			if(a>0){
-				b++
-			}
-			return b;
-		})(fileData.items.length,resCount)
+    // 补足总记录数，例如 json 文件中只写了2条记录，size=10 count=100，那么需要补98条记录。
+    // elog(curPagefixRatio)
+    if(curPagefixRatio){
+      // 深度拷贝原有记录
+      let oriData = cloneDeep(fileData.items);
+      // 先填满当前页的记录数
+      for(let i=0;i<curPagefixRatio-1;i++){
+        fileData.items = fileData.items.concat( cloneDeep(oriData) )
+      }
+    }
+    
+    // 多了减
+    let overCount = 0, dVal = pageNo*pageSize-totalCount;
+    if(dVal>0){
+      overCount = dVal;
+    }
+    // elog(dVal)
+    fileData.items = fileData.items.slice(0,pageSize-overCount);
+    // elog(fileData.items)
 
-		// 补足当前页记录数
-		elog(needCreate)
-		if(needCreate){
-			needCreate--;
-			let oriData = cloneDeep(fileData.items);
-			for(let i=0;i<needCreate;i++){
-				fileData.items = fileData.items.concat( cloneDeep(oriData) )
-			}
-		}
-		
-		// 多了减
-		let overCount = 0, dVal = pageNo*pageSize-totalCount;
-		if(dVal>0){
-			overCount = dVal;
-		}
-		fileData.items = fileData.items.slice(0,resCount-overCount);
-		// elog(fileData.items)
 	}
 	
 	return fileData;
@@ -307,33 +318,38 @@ module.exports = function(app, options){
 	if(!app)return;
 	
 	function checkOpsPlugins(ops){
-		let defPs = ['fastMap','getFile','placeHolder','acStructure','acList','acQuery'];
-		let ps = ops.plugins
-		if( !ps ){
-			ops.plugins = defPs;
-			return ops;
-		}
-		
-		let rlt = [];
-		if( ps.constructor === Object ){
-			for(i in defPs){
-				let val = defPs[i];
-				if( ps.hasOwnProperty(val) && !ps[val] ){
-					
-				}else{
-					rlt.push(val)
+		let defPs = {
+			'fastMap':1,
+			'getFile':1,
+			'placeHolder':1,
+			'acStructure':1,
+			'acList':1,
+			'acQuery':1
+		};
+		// ops._usePlugins = !ops._usePlugins.length || defPs;
+		// if(ops._usePlugins)return;
+		// 遍历配置，获取开启的插件列表
+		for(let pname in defPs){
+			let pval = ops.plugins[pname];
+			// elog(pname, pval)
+			// elog(pval)
+			if(pval!=undefined){
+				// elog(pname)
+				// elog(pval)
+				if(pval==false || ( pval.constructor === Object && pval.enable == false) ){
+					defPs[pname] = 0;
 				}
 			}
-		}else if( ps.constructor === Array){
-			rlt = ps
 		}
-		// elog(rlt)
-		ops.plugins = rlt;
-		return ops;
+		// elog(defPs)
+
+		return defPs;
 	}
-	checkOpsPlugins(options);
+	// 校验插件配置
+	options._usePlugins = checkOpsPlugins(options);
 	
 	// elog(options)
+	// 全局配置
 	let ops = assignDeep({
 		bodyParser:true,
 		debug:false,
@@ -342,8 +358,7 @@ module.exports = function(app, options){
     basePath: __dirname,
     dataPath:'api',
 		fileMap:null,
-		plugins:[],
-		pluginsOptions:{
+		plugins:{
 			acList:{
 				queryFields:{
 					size:{ // 每页展示数量
@@ -355,12 +370,14 @@ module.exports = function(app, options){
 						value:1 // [Number]，默认值
 					}
 				},
+				fixCount:true,
 				noPageBean:false,
 				totalCount:100 // [Number]，总记录数
 			}
-		}
+		},
+		_usePlugins:{}
 		
-	},options)
+	},options);
 	
 	if(!dataDirPath){
 		dataDirPath = path.join(ops.basePath, ops.dataPath)
@@ -375,25 +392,31 @@ module.exports = function(app, options){
 		app.use( bodyParser.urlencoded({ extended: true }) ); // for parsing application/x-www-form-urlencoded
 	}
 	
+	// 实现路由的响应
 	app.use(`/${ops.reqPath}/*`,function(req,res,next){
 		let jsonPath = getJsonPath(req);
 		
 		// 支持跨域
 		setAllowOrigin(req);
 		
+		// 判断是否需要重定向
 		let ckrdt = ckRedirect(req, ops.fileMap)
 		if( ckrdt.redirect ){
 			res.redirect(ckrdt.newPath)
 			return;
 		}
+
+		// 判断自定json文件是否存在
 		ckrdt.newPath && (jsonPath = ckrdt.newPath)
 		// elog( jsonPath );
 		// elog( req.query );
+		// json 文件内定义的配置
 		let tOps=null;
-		function cPlugin(name){
-			let td = tOps?tOps:ops
-			// elog(name,td)
-			return td.plugins.includes(name);
+
+		// 判断解析该请求时使用的插件
+		const cPlugin = function(name, _ops){
+			if(!_ops) _ops = ops;
+			return _ops._usePlugins[name];
 		}
 		
 		if(!jsonPath){
@@ -407,15 +430,16 @@ module.exports = function(app, options){
 			res.status(500).json(t_rlt);
 			
 		}else{
+			// 判断是否需要别名重定向
 			let ck_rlt = cPlugin('fastMap')? fastRoutes(jsonPath,req) :false;
 			
 			if( ck_rlt ){
-				// elog(ck_rlt)
+				// 补足统一响应结构
 				cPlugin('acStructure') && (ck_rlt = acStructure(ck_rlt));
 				res.status(200).json(ck_rlt);
 				
 			}else{
-				// 获取数据文件内容
+				// 获取json文件内容
 				if( !cPlugin('getFile') ){
 					res.status(404).json({
 						message:"错误！接口不可用"
@@ -424,35 +448,45 @@ module.exports = function(app, options){
 				}
 					
 				try	{
-					// 读取JSON文件
+					// 读取json文件
 					let jsonStr = fs.readFileSync(path.resolve(dataDirPath, jsonPath + '.json'), 'utf8')
 					// elog( jsonStr )
-					let rsp;
 					let fileJSON = JSON.parse(jsonStr);
 					tOps = {}
+					// 读取json文件中的设置
+					// elog(fileJSON)
 					if( fileJSON._settings ){
-						assignDeep(tOps, ops, fileJSON._settings)
-						checkOpsPlugins(tOps);
+						// 覆盖全局设置
+            assignDeep(tOps, ops, fileJSON._settings)
+            // elog(tOps)
+						// 获取插件设置
+						tOps._usePlugins = checkOpsPlugins(tOps);
+						// 读取后删除，防止在响应中出现
 						delete fileJSON._settings;
 					}else{
 						assignDeep(tOps, ops)
 					}
-					elog(tOps)
+
+					let rsp = fileJSON;
+					// 该请求的响应配置
+					// elog(tOps)
+					// elog(fileJSON)
+					// 开始依次执行内置插件
 					// 补列表结构
-					cPlugin('acList') && (rsp = acList(fileJSON, tOps.pluginsOptions.acList, req))
+					cPlugin('acList', tOps) && (rsp = acList(fileJSON, tOps.plugins.acList, req))
 					// 补基本结构
-					cPlugin('acStructure') && (rsp = acStructure(rsp))
+					cPlugin('acStructure', tOps) && (rsp = acStructure(rsp))
 					// 返回查询对象
-					cPlugin('acQuery') && (rsp._query = req.query)
+					cPlugin('acQuery', tOps) && (rsp._query = req.query)
 					// 替换占位符
-					cPlugin('placeHolder') && (rsp = placeHolder(rsp))
+					cPlugin('placeHolder', tOps) && (rsp = placeHolder(rsp))
 					// elog( rsp )
 					setTimeout(function(){
 						res.status(200).json(rsp);
 					},tOps.delay)
 					
 				}catch(err){
-					// elog(err)
+					throw err
 					res.status(403).json({
 						success:false,
 						message:"错误！接口文件解析出错，" + err
