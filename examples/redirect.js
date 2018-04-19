@@ -1,6 +1,6 @@
 var {elog} = require('uojo-kit');
 var express = require('express');
-var dataServer = require("../../src/index");
+var dataServer = require("../src/index");
 
 var app = express()
 
@@ -13,21 +13,6 @@ dataServer(app,{
 	reqPath: 'data',
 	dataPath: './api',
 	basePath: __dirname,
-	debug:true,
-	fileMap:{
-		'a1':'_true',
-		'a2':'/redirect',
-		'a(\\d+)b(\\d+)':function({pathRegExpMatch,req}){
-			elog(pathRegExpMatch)
-			elog(req.method)
-			elog(req.query)
-			elog(req.body)
-			return '_true';
-		},
-	},
-	plugins:{
-		// "acStructure":false
-	}
 })
 
 var bs = require('browser-sync').create();
