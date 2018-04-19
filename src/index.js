@@ -178,6 +178,7 @@ function fastRoutes(jsonPath,req){
 	
 }
 
+// 插件：自动补全响应接口
 function acStructure(obj){
 	// 补全基本结构
 	let rlt
@@ -198,23 +199,31 @@ function acStructure(obj){
 	return rlt;
 }
 
+// 插件：完善列表数据
 function acList(fileData, {noPageBean, queryFields, totalCount}, req){
 	// elog(noPageBean)
 	// 补全基本结构
 	if( !noPageBean && fileData.items && fileData.items.length && !fileData.pageBean ){
 		
-		fileData.pageBean = {
+		let {pageNo,pageSize} = fileData.pageBean = {
 			"pageNo": parseInt(req.query[queryFields.pageNo.name]) || queryFields.pageNo.value,
 			"pageSize": parseInt(req.query[queryFields.size.name]) || queryFields.size.value,
 			"totalCount": totalCount
 		}
-		
+
+		// 超出最大分页数
+		let pageNoLimit = Math.ceil(totalCount/pageSize);
+		if(pageNo>pageNoLimit){
+			pageNo = fileData.pageBean.pageNo = pageNoLimit;``
+		}
+
 		// 判断 pageNo 的合法性
-		if( fileData.pageBean.pageNo > Math.ceil( fileData.pageBean.totalCount/fileData.pageBean.pageSize) ){
+		if( pageNo > Math.ceil( totalCount/pageSize) ){
 			fileData.items= [];
 		}
 		
-		let resCount = Math.min(fileData.pageBean.totalCount, fileData.pageBean.pageSize);
+		// 计算当前页需要补的记录数
+		let resCount = Math.min(totalCount, pageSize);
 		let needCreate = (function(len,size){
 			elog(len,size)
 			if(len>size){
@@ -228,6 +237,7 @@ function acList(fileData, {noPageBean, queryFields, totalCount}, req){
 			return b;
 		})(fileData.items.length,resCount)
 
+		// 补足当前页记录数
 		elog(needCreate)
 		if(needCreate){
 			needCreate--;
@@ -238,7 +248,11 @@ function acList(fileData, {noPageBean, queryFields, totalCount}, req){
 		}
 		
 		// 多了减
-		fileData.items = fileData.items.slice(0,resCount)
+		let overCount = 0, dVal = pageNo*pageSize-totalCount;
+		if(dVal>0){
+			overCount = dVal;
+		}
+		fileData.items = fileData.items.slice(0,resCount-overCount);
 		// elog(fileData.items)
 	}
 	
