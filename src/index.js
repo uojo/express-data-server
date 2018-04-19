@@ -326,16 +326,12 @@ module.exports = function(app, options){
       'acList':1,
       'acQuery':1
     };
-    // ops._usePlugins = !ops._usePlugins.length || defPs;
-    // if(ops._usePlugins)return;
     // 遍历配置，获取开启的插件列表
     for(let pname in defPs){
       let pval = ops.plugins[pname];
       // elog(pname, pval)
-      // elog(pval)
       if(pval!=undefined){
-        // elog(pname)
-        // elog(pval)
+        // elog(pname, pval)
         if(pval==false || ( pval.constructor === Object && pval.enable == false) ){
           defPs[pname] = 0;
         }
@@ -345,12 +341,10 @@ module.exports = function(app, options){
 
     return defPs;
   }
-  // 校验插件配置
-  options._usePlugins = checkOpsPlugins(options);
   
   // elog(options)
   // 全局配置
-  let ops = assignDeep({
+  let config = assignDeep({
     bodyParser:true,
     debug:false,
     delay:0,
@@ -378,29 +372,32 @@ module.exports = function(app, options){
     _usePlugins:{}
     
   },options);
-  
+
+  // 校验插件配置
+  config._usePlugins = checkOpsPlugins(config);
+
   if(!dataDirPath){
-    dataDirPath = path.join(ops.basePath, ops.dataPath)
+    dataDirPath = path.join(config.basePath, config.dataPath)
   }
   
   // elog(dataDirPath)
-  // elog(ops)
+  // elog(config)
   
   // header 为 json 时，不需要
-  if(ops.bodyParser){
+  if(config.bodyParser){
     app.use( bodyParser.json() ); // for parsing application/json
     app.use( bodyParser.urlencoded({ extended: true }) ); // for parsing application/x-www-form-urlencoded
   }
   
   // 实现路由的响应
-  app.use(`/${ops.reqPath}/*`,function(req,res,next){
+  app.use(`/${config.reqPath}/*`,function(req,res,next){
     let jsonPath = getJsonPath(req);
     
     // 支持跨域
     setAllowOrigin(req);
     
     // 判断是否需要重定向
-    let ckrdt = ckRedirect(req, ops.fileMap)
+    let ckrdt = ckRedirect(req, config.fileMap)
     if( ckrdt.redirect ){
       res.redirect(ckrdt.newPath)
       return;
@@ -415,7 +412,7 @@ module.exports = function(app, options){
 
     // 判断解析该请求时使用的插件
     const cPlugin = function(name, _ops){
-      if(!_ops) _ops = ops;
+      if(!_ops) _ops = config;
       return _ops._usePlugins[name];
     }
     
@@ -457,14 +454,14 @@ module.exports = function(app, options){
           // elog(fileJSON)
           if( fileJSON._settings ){
             // 覆盖全局设置
-            assignDeep(tOps, ops, fileJSON._settings)
+            assignDeep(tOps, config, fileJSON._settings)
             // elog(tOps)
             // 获取插件设置
             tOps._usePlugins = checkOpsPlugins(tOps);
             // 读取后删除，防止在响应中出现
             delete fileJSON._settings;
           }else{
-            assignDeep(tOps, ops)
+            assignDeep(tOps, config)
           }
 
           let rsp = fileJSON;

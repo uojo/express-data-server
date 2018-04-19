@@ -1,10 +1,10 @@
 {
   "name": "express-data-server",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "基于 express 的模拟接口服务（中间件）",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon examples/simple"
+    "start": "nodemon examples/index.js"
   },
   "repository": {
     "type": "git",

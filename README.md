@@ -145,6 +145,8 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.6.1
+- fix 设定默认配置参数。
 ### 0.6.0
 - 删除参数 pluginsOptions 。
 - 支持在单个json文件内关闭插件。
