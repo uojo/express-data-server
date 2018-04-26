@@ -149,8 +149,10 @@ function placeHolder(data){
       }
 
       parent[key] = val.replace(/{([^}]*)}/ig,function(a,b){
-        if(match_cb[b]){
+        if(typeof match_cb[b] === 'function'){
           return match_cb[b]()
+        }else{
+          return a
         }
       });
 
