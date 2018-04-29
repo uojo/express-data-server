@@ -4,6 +4,15 @@ var dataServer = require("../src/index");
 
 var app = express()
 
+// 跨域设置
+app.all('*',(req,res,next)=>{
+	// console.log('all *',req.method, req.url, req.body)
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+	next();
+})
+
 dataServer(app,{
 	reqPath: 'data',
 	dataPath: './api',
