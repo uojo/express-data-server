@@ -63,6 +63,7 @@ dataServer(app,options); // 启动
 | basePath | String | 是 | - | 一般为该文件的父目录路径，例如：`__dirname` |
 | dataPath | String | 是 | - | 数据存放的目录名，是 basePath 的相对路径，例如：'../api' |
 | debug | Boolean | - | false | 是否打印调试信息 |
+| bodyParser | Boolean | - | true | 是否启用包 body-parser |
 | delay | number | - | 0 | 设置延迟返回的毫秒数 |
 | fileMap | Object | - | - | url 与 json文件的关联映射表 |
 | plugins | Array\|Object | -| - | 启用的插件 |
@@ -145,6 +146,8 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.6.3
+- fix 将解析提交数据的限制大小改为 '99999kb' 。
 ### 0.6.2
 - fix 占位符解析错误。
 ### 0.6.1

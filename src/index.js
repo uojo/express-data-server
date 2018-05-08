@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const bodyParser = require('body-parser')
 const {elog} = require('uojo-kit');
 
 let dataDirPath;
@@ -387,7 +386,10 @@ module.exports = function(app, options){
   
   // header 为 json 时，不需要
   if(config.bodyParser){
-    app.use( bodyParser.json() ); // for parsing application/json
+    const bodyParser = require('body-parser')
+    app.use( bodyParser.json({
+      limit:'99999kb'
+    }) ); // for parsing application/json
     app.use( bodyParser.urlencoded({ extended: true }) ); // for parsing application/x-www-form-urlencoded
   }
   
