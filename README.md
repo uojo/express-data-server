@@ -149,6 +149,8 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.8.0
+- feature 修改 placeHolder 插件中占位符 id，可深度匹配。
 ### 0.7.0
 - feature 新增 acStructure 插件的配置参数。
 ### 0.6.3

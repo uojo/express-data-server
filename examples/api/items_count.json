@@ -1,12 +1,17 @@
 {
 	"items":[
-		{"id":"{index}","name": "hello_{random}_{times}"},
-		{"id":"{index}","name": "world"}
+		{"id":"{id}","name": "hello_{random}_{times}_{id}", "children":[{"id":"{id}"}]},
+		{"id":"{id}","name": "world"}
 	],
 	"_settings":{
 		"plugins":{
 			"acList":{
-				"totalCount":3
+				"totalCount":5,
+				"queryFields":{
+					"size":{
+						"value":3
+					}
+				}
 			}
 		}
 	}

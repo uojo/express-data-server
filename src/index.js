@@ -97,21 +97,28 @@ function cloneDeep(obj, white){
 };
 
 function mapDeep(data,callback){
-  if(typeof data ==='object'){
-    function _map(da){
-      for(key in da){
-        var td = da[key];
-        // console.log(typeof td,td)
-        if(typeof td!=='object'){
-          callback(td,key,da)
-        }else{
-          _map(td)
-        }
+  function _map(val,key,pt,tags){
+    tags = tags || []
+    // 遍历对象
+    if(val.constructor==Object){
+      callback(val,key,pt,tags)
+      for(k in val){
+        var it = val[k]
+        _map(it,k,val,tags)
       }
+    }else if(val.constructor==Array){
+      callback(val,key,pt,tags)
+      // 遍历数组
+      for(var i=0,len=val.length;i<len;i++){
+        var it = val[i]
+        _map(it,i,val,tags.concat(i))
+      }
+    }else{
+      callback(val,key,pt,tags)
     }
-    
-    _map(data);
   }
+  
+  _map(data);
   
   return data;
 };
@@ -124,21 +131,36 @@ function GetRandomNum(Min,Max){
 
 function placeHolder(data){
   // 替换占位符
-  let id=0, index=0;
   // elog(data.results.items.length)
-  mapDeep(data,(val,key,parent)=>{
-    // elog(key,val)
+  let index=0;
+  const getStartIndex = ()=>{
+    let startIndex = 0;
+    if(data.results && data.results.pageBean){
+      startIndex = (data.results.pageBean.pageNo-1) * data.results.pageBean.pageSize;
+    }
+    return startIndex;
+  }
+  const startIndex = getStartIndex();
+
+  mapDeep(data,(val,key,parent,tags)=>{
+    // elog(key,val,'>>',parent)
     if( typeof val === 'string' ){
-      let getIndex = function(){
-        let startIndex = 0;
-        if(data.results && data.results.pageBean){
-          startIndex = (data.results.pageBean.pageNo-1) * data.results.pageBean.pageSize;
-        }
-        return startIndex+(++index);
-      }
+
+
       let match_cb = {
-        'id':getIndex,
-        'index':getIndex,
+        'id':function(){
+          // elog(tags, key)
+          if(!tags.length)return''
+          // console.log(startIndex)
+          var tval = tags.map((el,i)=>{
+            var j = el+1
+            return i===0?(startIndex+j):j
+          })
+          return tval.join('-')
+        },
+        'index':function(){
+          return startIndex+(++index);
+        },
         'random':function(){
           return GetRandomNum(100,200);
         },
