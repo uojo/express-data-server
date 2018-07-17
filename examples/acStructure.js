@@ -9,23 +9,11 @@ dataServer(app,{
 	dataPath: './api',
 	basePath: __dirname,
 	debug:true,
-	fileMap:{
-		'.*':({pathRegExpMatch,req})=>{
-			elog('.*',pathRegExpMatch,req.method)
-			return pathRegExpMatch;
-		},
-		'a1':'_true',
-		'a2':'/redirect',
-		'a(\\d+)b(\\d+)':function({pathRegExpMatch,req}){
-			// elog(pathRegExpMatch)
-			// elog(req.method)
-			// elog(req.query)
-			// elog(req.body)
-			return '_true';
-		},
-	},
 	plugins:{
-		// "acStructure":false
+		"acStructure":{
+			xoField:'code',
+			dataField:'td'
+		}
 	}
 })
 

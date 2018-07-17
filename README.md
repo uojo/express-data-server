@@ -99,12 +99,15 @@ dataServer(app,options); // 启动
 }
 ```
 
-##### acStructure
-如果想禁用某个插件，可以传入对象：
+##### acStructure [Boolean|Object]
+如果想禁用某个插件，传入 `false`，如果需要修改默认配置，请传入对象：
 ```javascript
 {
   "plugins": {
-    "acStructure":false
+    "acStructure":{
+      "xoField":"success",
+      "dataField":"results"
+    }
   }
 }
 ```
@@ -146,6 +149,8 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.7.0
+- feature 新增 acStructure 插件的配置参数。
 ### 0.6.3
 - fix 将解析提交数据的限制大小改为 '99999kb' 。
 ### 0.6.2

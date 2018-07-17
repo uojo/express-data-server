@@ -180,22 +180,22 @@ function fastRoutes(jsonPath,req){
 }
 
 // 插件：自动补全响应接口
-function acStructure(obj){
+function acStructure(obj, ops){
   // elog(obj)
   // 补全基本结构
   let rlt
   
-  if( obj.success == false ){
+  if( obj[ops.xoField] == false ){
     rlt = Object.assign({'message':"接口返回的错误信息……"},obj);
     
-  }else if( Object.prototype.hasOwnProperty.call(obj, 'success') ){
+  }else if( Object.prototype.hasOwnProperty.call(obj, ops.xoField) ){
     rlt = obj;
     
   }else{
-    rlt = {
-      success:true,
-      results : obj,
-    };
+    rlt = {}
+    rlt[ops.xoField] = true;
+    rlt[ops.dataField] = obj
+
   }
   
   return rlt;
@@ -354,6 +354,10 @@ module.exports = function(app, options){
     dataPath:'api',
     fileMap:null,
     plugins:{
+      acStructure:{
+        xoField:'success',
+        dataField:'results'
+      },
       acList:{
         queryFields:{
           size:{ // 每页展示数量
@@ -407,7 +411,7 @@ module.exports = function(app, options){
       return;
     }
 
-    // 判断自定json文件是否存在
+    // 判断自定 json 文件是否存在
     ckrdt.newPath && (jsonPath = ckrdt.newPath)
     // elog( jsonPath );
     // elog( req.query );
@@ -436,7 +440,7 @@ module.exports = function(app, options){
       
       if( ck_rlt ){
         // 补足统一响应结构
-        cPlugin('acStructure') && (ck_rlt = acStructure(ck_rlt));
+        cPlugin('acStructure') && (ck_rlt = acStructure(ck_rlt, config.plugins.acStructure));
         res.status(200).json(ck_rlt);
         
       }else{
@@ -476,7 +480,7 @@ module.exports = function(app, options){
           // 补列表结构
           cPlugin('acList', tOps) && (rsp = acList(fileJSON, tOps.plugins.acList, req))
           // 补基本结构
-          cPlugin('acStructure', tOps) && (rsp = acStructure(rsp))
+          cPlugin('acStructure', tOps) && (rsp = acStructure(rsp, assignDeep({},tOps.plugins.acStructure,config.plugins.acStructure) ) )
           // 返回查询对象
           cPlugin('acQuery', tOps) && (rsp._query = req.query)
           // 替换占位符
