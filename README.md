@@ -72,9 +72,26 @@ dataServer(app,options); // 启动
 `fileMap` 没有默认值，因为默认情况是以文件名访问的。当配置如下时：
 ```javascript
 {
-  aaa: "test1",
-  bbb: "/test2" // 将会 304 跳转
+  "a(\\d+)b(\\d+)": "file1", // 请求 /api/a1b2 将响应 file1.json 内容
+  "hello": "file2", // 请求 /api/aaa 将响应 file2.json 内容
+  "baidu": "//www.baidu.com" // 将会 304 跳转
 }
+```
+值得类型，支持数组：
+```javascript
+[{
+  "regStr: ".*",
+  "callback": function({regExp, req, reqPath}){
+    // exp => [GET]request: /api/a1b2
+    let {originalUrl, method, baseUrl} = req
+    console.log(originalUrl) // /api/a1b2
+    console.log(baseUrl) // /api
+    console.log(method) // GET
+    console.log(reqPath) // a1b2
+
+    return originalUrl
+  }
+}]
 ```
 
 #### plugins 说明&举例
@@ -88,6 +105,7 @@ dataServer(app,options); // 启动
 | acStructure | 补全基本结构 |
 | acList | 补全列表特种的数据结构 |
 | acQuery | 补全请求时的 query 数据 |
+
 
 ##### placeHolder
 `placeHolder` 提供了三种占位符，支持拼接。其使用如下：
@@ -149,6 +167,9 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.8.1
+- feature 添加 eslint 配置。
+- fileMap 支持 数组。
 ### 0.8.0
 - feature 修改 placeHolder 插件中占位符 id，可深度匹配。
 ### 0.7.0

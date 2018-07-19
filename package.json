@@ -1,10 +1,13 @@
 {
   "name": "express-data-server",
-  "version": "0.8.0",
-  "description": "基于 express 的模拟接口服务（中间件）",
+  "version": "0.8.1",
+  "description": "基于 express 提供模拟接口数据服务",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon examples/index.js"
+    "start": "nodemon examples/index.js",
+    "start:fileMap": "nodemon examples/index.js -s fileMap",
+    "start:acStructure": "nodemon examples/index.js -s acStructure",
+    "lint": "standard -fix src/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,12 +27,17 @@
   "homepage": "https://github.com/uojo/express-data-server",
   "devDependencies": {
     "browser-sync": "2.18.13",
+    "commander": "^2.16.0",
     "cross-env": "5.0.5",
     "express": "4.15.4",
-    "nodemon": "1.11.0"
+    "nodemon": "1.11.0",
+    "standard": "^11.0.1"
   },
   "dependencies": {
     "body-parser": "1.18.0",
     "uojo-kit": "0.2.0"
+  },
+  "standard": {
+    "ignore": []
   }
 }
