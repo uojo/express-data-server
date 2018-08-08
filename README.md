@@ -77,21 +77,23 @@ dataServer(app,options); // 启动
   "baidu": "//www.baidu.com" // 将会 304 跳转
 }
 ```
-值得类型，支持数组：
+值的类型，支持数组：
 ```javascript
-[{
-  "regStr: ".*",
-  "callback": function({regExp, req, reqPath}){
-    // exp => [GET]request: /api/a1b2
-    let {originalUrl, method, baseUrl} = req
-    console.log(originalUrl) // /api/a1b2
-    console.log(baseUrl) // /api
-    console.log(method) // GET
-    console.log(reqPath) // a1b2
+{
+  fileMap :[{
+    "regStr: ".*",
+    "callback": function({regExp, req, reqPath}){
+      // exp => [GET]request: /api/a1b2
+      let {originalUrl, method, baseUrl} = req
+      console.log(originalUrl) // /api/a1b2
+      console.log(baseUrl) // /api
+      console.log(method) // GET
+      console.log(reqPath) // a1b2
 
-    return originalUrl
-  }
-}]
+      return originalUrl
+    }
+  }]
+}
 ```
 
 #### plugins 说明&举例
