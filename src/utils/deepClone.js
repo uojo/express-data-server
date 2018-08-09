@@ -5,8 +5,9 @@ var cloneDeep = function (obj, white) {
   // console.log(this);
   // console.info( obj.constructor, obj.valueOf() );
   // console.info( obj.constructor, obj.valueOf() );
-
-  if (obj.constructor === Object || obj.constructor === Array) {
+  if (obj === null || obj === undefined) {
+    o = obj
+  } else if (obj.constructor === Object || obj.constructor === Array) {
     o = new obj.constructor()
   } else {
     // console.info( obj.valueOf() );

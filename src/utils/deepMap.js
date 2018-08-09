@@ -2,7 +2,9 @@ module.exports = function (data, callback) {
   function _map (val, key, pt, tags) {
     tags = tags || []
     // 遍历对象
-    if (val.constructor === Object) {
+    if (val === null || val === undefined) {
+      callback(val, key, pt, tags)
+    } else if (val.constructor === Object) {
       callback(val, key, pt, tags)
       for (var k in val) {
         var da = val[k]

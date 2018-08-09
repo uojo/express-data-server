@@ -169,6 +169,8 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.8.2
+- fix 解析值为 undefined、null 出错。
 ### 0.8.1
 - feature 添加 eslint 配置。
 - fileMap 支持 数组。

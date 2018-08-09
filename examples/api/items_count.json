@@ -1,7 +1,7 @@
 {
 	"items":[
 		{"id":"{id}","name": "hello_{random}_{times}_{id}", "children":[{"id":"{id}"}]},
-		{"id":"{id}","name": "world"}
+		{"id":"{id}","name": "world","sex":null}
 	],
 	"_settings":{
 		"plugins":{
