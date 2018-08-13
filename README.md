@@ -169,6 +169,8 @@ dataServer(app,options); // 启动
 > 注意：json 文件中的配置优先级 > 全局配置优先级
 
 ## ChangeLog
+### 0.9.0
+- feature 修改 placeHolder 插件，实现数据值按字段名称不同类型不同，例如 id 是数字类型。
 ### 0.8.2
 - fix 解析值为 undefined、null 出错。
 ### 0.8.1

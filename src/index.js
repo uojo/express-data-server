@@ -3,7 +3,7 @@ const path = require('path')
 const deepAssign = require('./utils/deepAssign')
 const deepClone = require('./utils/deepClone')
 const deepMap = require('./utils/deepMap')
-// const {elog} = require('uojo-kit')
+// const elog = require('./log')
 
 let dataDirPath
 
@@ -27,37 +27,72 @@ function placeHolder (data) {
   const startIndex = getStartIndex()
 
   deepMap(data, (val, key, parent, tags) => {
-    // elog(key,val,'>>',parent)
+    // elog(key, val, '>>', parent)
     if (typeof val === 'string') {
       let matchCallback = {
-        'id': function () {
-          // elog(tags, key)
-          if (!tags.length) return ''
-          // console.log(startIndex)
-          var tval = tags.map((el, i) => {
-            var j = el + 1
-            return i === 0 ? (startIndex + j) : j
-          })
-          return tval.join('-')
+        'id': {
+          type: 'number',
+          value: function () {
+            // elog(key, tags)
+            if (!tags.length) return ''
+            // console.log(startIndex)
+            // 子集（数组）
+            /*
+            var tval = tags.map((el, i) => {
+              var j = el + 1
+              return i === 0 ? (startIndex + j) : j
+            })
+            return tval.join('-') // tags[0,1] => '1-2'
+             */
+            return tags[tags.length - 1] + 1 // tags[0,1] => '2'
+          }
         },
-        'index': function () {
-          return startIndex + (++index)
+        'index': {
+          type: 'number',
+          value: function () {
+            return startIndex + (++index)
+          }
         },
-        'random': function () {
-          return GetRandomNum(100, 200)
+        'random': {
+          type: 'number',
+          value: function () {
+            return GetRandomNum(100, 200)
+          }
         },
-        'times': function () {
-          return Date.now()
+        'times': {
+          type: 'number',
+          value: function () {
+            return Date.now()
+          }
         }
       }
 
-      parent[key] = val.replace(/{([^}]*)}/ig, function (a, b) {
-        if (typeof matchCallback[b] === 'function') {
-          return matchCallback[b]()
+      const replaceFn = function (a, b) {
+        if (typeof matchCallback[b].value === 'function') {
+          return matchCallback[b].value()
         } else {
           return a
         }
-      })
+      }
+
+      const matchField = val.match(/^{([^}]*)}$/)
+      if (matchField) {
+        let matchFieldName = matchField[1]
+        // elog(matchField, matchFieldName)
+        // 完全匹配
+        parent[key] = val.replace(/^{([^}]*)}$/ig, replaceFn)
+        // 类型转化
+        let matchInfo = matchCallback[matchFieldName]
+        if (matchInfo) {
+          if (matchInfo.type === 'number' && !/\D/.test(parent[key])) {
+            // elog(parent[key])
+            parent[key] = Number(parent[key])
+          }
+        }
+      } else {
+        // 部分匹配
+        parent[key] = val.replace(/{([^}]*)}/ig, replaceFn)
+      }
     }
   })
 

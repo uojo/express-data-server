@@ -1,4 +1,4 @@
-var {elog} = require('uojo-kit')
+var {elog} = require('node-stack-log')
 var express = require('express')
 var commander = require('commander')
 var dataServer = require('../src/index')

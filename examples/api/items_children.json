@@ -1,28 +1,22 @@
 {
 	"items": [{
+		"children": [{
 			"id": "{id}",
 			"times": "{times}",
 			"random": "{random}",
 			"random_times_id": "{random}_{times}_{id}",
 			"children": [{
-				"id": "{id}"
+				"id": "{id}",
+				"times": "{times}",
+				"random": "{random}",
+				"random_times_id": "{random}_{times}_{id}"
 			}]
-		},
-		{
-			"id": "{id}",
-			"name": "world",
-			"sex": null
-		}
-	],
+		}]
+	}],
 	"_settings": {
 		"plugins": {
 			"acList": {
-				"totalCount": 5,
-				"queryFields": {
-					"size": {
-						"value": 3
-					}
-				}
+				"totalCount": 1
 			}
 		}
 	}
